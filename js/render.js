@@ -317,6 +317,7 @@ class Renderer {
     }
     ctx.stroke();
     // shore foam
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, WORLD_W, WORLD_H); ctx.clip();
     ctx.lineJoin = 'round'; ctx.lineCap = 'round';
     for (let pass = 0; pass < 2; pass++) {
       ctx.setLineDash(pass ? [3, 9] : [7, 6]); ctx.lineDashOffset = pass ? -time * 5 : time * 3;
@@ -329,6 +330,7 @@ class Renderer {
       if (pass) ctx.restore();
     }
     ctx.setLineDash([]);
+    ctx.restore();
     // reef foam rings
     for (const r of map.reefs) {
       const k = ((time * 0.5 + r.seed * 0.001) % 1);
@@ -370,6 +372,7 @@ class Renderer {
     this.drawDarkness(n, view, shx, shy);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.drawImage(this.light, 0, 0, this.cv.width, this.cv.height);
+    this.drawMargins(ctx, P, shx, shy);
     // ---------- glow
     worldT();
     ctx.globalCompositeOperation = 'lighter';
@@ -433,6 +436,32 @@ class Renderer {
     }
   }
 
+  // Beyond the edge of the chart the sea fades into the dark
+  drawMargins(ctx, P, shx, shy) {
+    const d = this.dpr, x0 = (this.ox + shx) * d, y0 = (this.oy + shy) * d;
+    const x1 = x0 + WORLD_W * this.s * d, y1 = y0 + WORLD_H * this.s * d;
+    const W = this.cv.width, H = this.cv.height;
+    if (x0 < 2 && y0 < 2) return;
+    const c = P.dark, solid = rgba(c, 0.93), clear = rgba(c, 0);
+    const F = 70 * this.s * d;
+    ctx.fillStyle = solid;
+    if (y0 >= 2) {
+      ctx.fillRect(0, 0, W, y0); ctx.fillRect(0, y1, W, H - y1);
+      let g = ctx.createLinearGradient(0, y0, 0, y0 + F); g.addColorStop(0, solid); g.addColorStop(1, clear);
+      ctx.fillStyle = g; ctx.fillRect(0, y0, W, F);
+      g = ctx.createLinearGradient(0, y1, 0, y1 - F); g.addColorStop(0, solid); g.addColorStop(1, clear);
+      ctx.fillStyle = g; ctx.fillRect(0, y1 - F, W, F);
+    }
+    if (x0 >= 2) {
+      ctx.fillStyle = solid;
+      ctx.fillRect(0, 0, x0, H); ctx.fillRect(x1, 0, W - x1, H);
+      let g = ctx.createLinearGradient(x0, 0, x0 + F, 0); g.addColorStop(0, solid); g.addColorStop(1, clear);
+      ctx.fillStyle = g; ctx.fillRect(x0, 0, F, H);
+      g = ctx.createLinearGradient(x1, 0, x1 - F, 0); g.addColorStop(0, solid); g.addColorStop(1, clear);
+      ctx.fillStyle = g; ctx.fillRect(x1 - F, 0, F, H);
+    }
+  }
+
   makeVignette() {
     const c = mkCanvas(this.cv.width, this.cv.height), x = c.getContext('2d');
     const g = x.createRadialGradient(c.width / 2, c.height / 2, Math.min(c.width, c.height) * 0.35, c.width / 2, c.height / 2, Math.max(c.width, c.height) * 0.75);
@@ -471,6 +500,10 @@ class Renderer {
       // fog banks eat some of the cut
       l.globalAlpha = 1;
     }
+    // the open sea beyond the Gloam is moonlit; the dark thickens toward the lamp
+    const og = l.createRadialGradient(L.x, L.y, GLOAM_R - 70, L.x, L.y, GLOAM_R + 50);
+    og.addColorStop(0, 'rgba(0,0,0,0)'); og.addColorStop(1, 'rgba(0,0,0,0.3)');
+    l.globalAlpha = view.darkness; l.fillStyle = og; l.fillRect(-400, -400, WORLD_W + 800, WORLD_H + 800);
     const cut = (x, y, r, a) => { l.globalAlpha = clamp(a, 0, 1); l.drawImage(this.soft, x - r, y - r, r * 2, r * 2); };
     cut(L.x, L.y + 10, 80, 0.9);
     for (const f of n.flares) {
