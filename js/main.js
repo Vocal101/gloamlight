@@ -1,7 +1,7 @@
 'use strict';
 // App shell: main loop, input routing, screen flow, progress and achievements.
 
-const GAME_VERSION = '1.0.0';
+const GAME_VERSION = '1.0.1';
 
 function fmtDur(s) {
   s = Math.floor(s);
@@ -58,6 +58,11 @@ const App = {
       const [x, y] = pos(e);
       if (e.pointerType !== 'mouse' && !(e.buttons & 1) && e.pointerType !== 'pen') return;
       this.match.pointerMove(x, y, e.pointerType);
+      if (e.pointerType === 'mouse' && !this.paused) {
+        // a second button pressed while one is held arrives as a move, not a down
+        if (e.button === 2 && (e.buttons & 2)) this.match.pointerDown(x, y, 2, 'mouse');
+        if (this.match.state === 'run') this.match.input.mouseFocus = (e.buttons & 1) !== 0;
+      }
     });
     cv.addEventListener('pointerdown', e => {
       this.audio.init();
@@ -67,7 +72,11 @@ const App = {
       this.match.pointerDown(x, y, e.button, e.pointerType);
       if (UI.screen === 'brief' && this.match.state === 'prep' && e.pointerType !== 'mouse' && window.innerWidth <= 760) UI.showPrepBar();
     });
-    const up = e => { if (this.match) this.match.pointerUp(e.button, e.pointerType); };
+    const up = e => {
+      if (!this.match) return;
+      if (e.pointerType === 'mouse') this.match.input.mouseFocus = (e.buttons & 1) !== 0;
+      else this.match.pointerUp(e.button, e.pointerType);
+    };
     cv.addEventListener('pointerup', up);
     cv.addEventListener('pointercancel', up);
     window.addEventListener('keydown', e => {
@@ -77,8 +86,10 @@ const App = {
         return;
       }
       if (this.mode !== 'play' || !this.match || this.paused) return;
+      // Enter lights the lamp only from the briefing or the buoy bar (not from the Workshop)
+      if (e.code === 'Enter' && this.match.state === 'prep' && (UI.screen === 'brief' || UI.prepBarShown())) { e.preventDefault(); this.beginNight(); return; }
+      if (this.match.state !== 'run') return;
       if (e.code === 'Space' || e.code.startsWith('Arrow')) e.preventDefault();
-      if (e.code === 'Enter' && this.match.state === 'prep') { this.beginNight(); return; }
       if (!e.repeat) this.match.key(e.code, true);
     });
     window.addEventListener('keyup', e => { if (this.match && this.mode === 'play') this.match.key(e.code, false); });
@@ -203,7 +214,8 @@ const App = {
   // ---------- results and progress
   onMatchEnd(match) {
     const n = match.n, r = n.result;
-    if (!r) return;
+    if (!r || match.reported) return; // a night pays out exactly once
+    match.reported = true; match.finished = true;
     const d = Save.data, st = d.stats;
     st.saved += r.saved; st.wrecked += r.wrecked;
     st.glooms += r.stats.glooms; st.wisps += r.stats.wisps; st.krakens += r.stats.krakens; st.freed += r.stats.freed; st.wraiths += r.stats.wraiths;

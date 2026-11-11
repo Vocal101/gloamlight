@@ -55,7 +55,7 @@ const UI = {
       case 'toggle': this.toggleSetting(arg, el); break;
       case 'fullscreen': app.toggleFullscreen(); break;
       case 'reset': this.confirmReset(); break;
-      case 'resetYes': Save.reset(); app.applySettings(); this.title(); this.toast('Progress cleared', 'The light passes to a new keeper.'); break;
+      case 'resetYes': Save.reset(); this.endlessRegion = null; app.applySettings(); this.title(); this.toast('Progress cleared', 'The light passes to a new keeper.'); break;
       case 'rotateOk': document.body.classList.add('rotate-ok'); break;
     }
   },
@@ -265,6 +265,7 @@ const UI = {
     $('#hAbil').hidden = true;
     this.refreshPrep();
   },
+  prepBarShown() { return !$('#hPrep').hidden; },
   hidePrepBar() { $('#hPrep').hidden = true; $('#hAbil').hidden = false; },
   refreshPrep() {
     const m = this.app.match; if (!m) return;
@@ -568,6 +569,8 @@ const UI = {
   endless() {
     this.app.setMenuMode();
     if (this.endlessRegion == null) this.endlessRegion = Save.data.endless.bestRegion || 0;
+    const open = r => { const first = NIGHTS.findIndex(n => n.region === r); return Save.unlocked(first) && Save.nightDone(NIGHTS[first].id); };
+    if (!open(this.endlessRegion)) this.endlessRegion = 0;
     const opts = REGIONS.map((R, r) => {
       const first = NIGHTS.findIndex(n => n.region === r);
       const ok = Save.unlocked(first) && Save.nightDone(NIGHTS[first].id);

@@ -1,5 +1,5 @@
 // Offline support: cache the game files, serve them cache-first, refresh in the background.
-const VERSION = 'gloamlight-v1.0.0';
+const VERSION = 'gloamlight-v1.0.1';
 const FILES = [
   './', 'index.html', 'manifest.webmanifest', 'css/style.css',
   'js/util.js', 'js/data.js', 'js/map.js', 'js/sim.js', 'js/bot.js', 'js/fx.js', 'js/art.js', 'js/render.js',

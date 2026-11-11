@@ -366,13 +366,17 @@ class Night {
   }
 
   stepSchedule() {
-    while (this.schedIdx < this.schedule.length && this.schedule[this.schedIdx].t <= this.t + 4) {
-      const e = this.schedule[this.schedIdx];
+    // warn of every ship due in the next four seconds, even if a creature is scheduled first
+    for (let i = this.schedIdx; i < this.schedule.length && this.schedule[i].t <= this.t + 4; i++) {
+      const e = this.schedule[i];
       if (e.kind === 'ship' && !e.warned) {
         e.warned = true;
         const sp = this.map.spawns[e.spawn];
         this.events.push({ type: 'incoming', x: sp.x, y: sp.y, shipType: e.type, dock: e.dock, at: e.t });
       }
+    }
+    while (this.schedIdx < this.schedule.length) {
+      const e = this.schedule[this.schedIdx];
       if (e.t > this.t) break;
       if (e.kind === 'ship') this.spawnShip(e.type, e.spawn, e.dock);
       else if (e.kind === 'monster') this.spawnMonster(e.type);
@@ -901,7 +905,7 @@ class Night {
     if (this.schedIdx < this.schedule.length) return;
     if (this.ships.some(s => s.state === 'sail' || s.state === 'grabbed')) return;
     if (this.boss && !this.boss.dead) return;
-    if (this.boss && this.boss.dead && this.boss.stateT > 0) { this.boss.stateT -= DT; return; }
+    if (this.boss && this.boss.dead && this.boss.stateT > 0) return; // let it sink (stepBoss counts the time down)
     this.state = 'won';
     this.result = this.makeResult(true);
     this.events.push({ type: 'won' });
