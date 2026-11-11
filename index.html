@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#060d16">
+  <meta name="description" content="Gloamlight: keep a lighthouse on a coast where the dark is alive. Ships can only see the rocks while your beam is on them. Burn back the creatures of the Gloam and bring them home.">
+  <title>Gloamlight</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="preload" href="fonts/plex-sans-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="menu">
+  <canvas id="cv" aria-label="The sea at night, seen from the lighthouse"></canvas>
+  <div id="hud" hidden></div>
+  <div id="ui"></div>
+  <div id="toasts" aria-live="polite"></div>
+  <div id="rotate"><div class="phone"></div><p>Gloamlight plays best with your device turned sideways.</p><button class="btn small" data-act="rotateOk" onclick="document.body.classList.add('rotate-ok')">Play anyway</button></div>
+  <div id="loading">Lighting the lamp…</div>
+  <noscript><p style="padding:2em;font-family:Georgia,serif">Gloamlight needs JavaScript to run.</p></noscript>
+
+  <script src="js/util.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/sim.js"></script>
+  <script src="js/bot.js"></script>
+  <script src="js/fx.js"></script>
+  <script src="js/art.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/save.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/dev.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

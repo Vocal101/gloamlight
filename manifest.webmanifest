@@ -1,0 +1,15 @@
+{
+  "name": "Gloamlight",
+  "short_name": "Gloamlight",
+  "description": "Keep the lamp lit on a coast where the dark is alive.",
+  "start_url": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#060d16",
+  "theme_color": "#060d16",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

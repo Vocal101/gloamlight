@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="sky" cx="50%" cy="38%" r="70%"><stop offset="0" stop-color="#16314a"/><stop offset="1" stop-color="#050b14"/></radialGradient>
+    <linearGradient id="beam" x1="0" x2="1"><stop offset="0" stop-color="#ffe2a0" stop-opacity=".95"/><stop offset="1" stop-color="#ffe2a0" stop-opacity="0"/></linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#sky)"/>
+  <path d="M262 168 L512 92 L512 262 Z" fill="url(#beam)"/>
+  <path d="M60 420c60-20 120 18 196 0s136 16 196 0v92H60z" fill="#0d2a3a"/>
+  <path d="M206 410 L224 196 h64 L306 410 Z" fill="#e9e4d8"/>
+  <path d="M212 340 h88 l4 46 h-96z M219 262 h74 l3 40 h-80z" fill="#b5413a"/>
+  <rect x="222" y="150" width="68" height="46" rx="4" fill="#fff0c4"/>
+  <path d="M214 150 L256 112 L298 150 Z" fill="#2d2a28"/>
+  <rect x="208" y="194" width="96" height="10" rx="3" fill="#2d2a28"/>
+  <circle cx="256" cy="172" r="60" fill="#ffd27a" opacity=".22"/>
+  <path d="M40 444c70-22 130 18 216 0s150 18 216 0" stroke="#6fc3d8" stroke-width="8" fill="none" opacity=".5"/>
+</svg>

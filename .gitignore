@@ -1,0 +1,4 @@
+.claude/
+.snaps/
+node_modules/
+*.log

@@ -1,0 +1,12 @@
+{
+  "name": "gloamlight",
+  "version": "1.0.0",
+  "description": "Keep a lighthouse on a coast where the dark is alive. Ships only see the rocks while your beam is on them.",
+  "private": true,
+  "scripts": {
+    "test": "node tests/sim.test.js",
+    "campaign": "node tests/campaign.js 0.5",
+    "serve": "python scripts/devserver.py 8780"
+  },
+  "license": "MIT"
+}
